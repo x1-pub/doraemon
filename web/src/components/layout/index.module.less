@@ -1,0 +1,39 @@
+.layout {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sider {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 13px 5px 5px;
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.header[data-collapsed="true"] {
+  justify-content: center;
+}
+
+.menu {
+  flex-grow: 1;
+}
+
+.center-loading {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  padding: 12px 0;
+  overflow-y: auto;
+}

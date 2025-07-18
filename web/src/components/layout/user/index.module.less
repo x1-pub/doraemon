@@ -1,0 +1,72 @@
+.wrap {
+  margin-top: 10px;
+}
+
+.popover {
+  height: 40px;
+  margin: 10px 4px;
+  padding: 0 4px;
+  cursor: pointer;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  .name {
+    color: #595959;
+    font-size: 13px;
+  }
+}
+
+.popover[data-collapsed="true"] {
+  justify-content: center;
+}
+
+.user-panel {
+  width: 200px;
+
+  .details {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    gap: 12px;
+  }
+
+  .name-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .name {
+    color: #595959;
+    font-size: 12px;
+  }
+
+  .nameCn {
+    font-size: 13px;
+  }
+}
+
+.email {
+  color: #595959;
+}
+
+.handler {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}

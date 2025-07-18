@@ -1,0 +1,29 @@
+.configWrap {
+  display: flex;
+  height: calc(100vh - 24px);
+}
+
+.treeWrap {
+  width: 262px;
+  flex-shrink: 0;
+  height: 100%;
+  padding-left: 12px;
+
+  :global {
+    .ant-tree {
+      height: 100%;
+
+      .ant-tree-list {
+        height: 100%;
+        overflow: auto;
+      }
+    }
+  }
+}
+
+.contentWrap {
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0 12px;
+  flex-grow: 1;
+}
