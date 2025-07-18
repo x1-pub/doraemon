@@ -1,7 +1,7 @@
 import md5 from 'md5'
 import type { Data, DoraemonOptions, RequestFunction } from './type'
 
-const HOST = 'http://127.0.0.1:7102/open-api/v1'
+const HOST = 'https://doraemon.x1.pub/open-api/v1'
 
 class Doraemon {
   private options: DoraemonOptions
