@@ -1,3 +1,4 @@
+import { message } from "antd"
 import type { AxiosInstance, AxiosRequestConfig } from "axios"
 import axios from "axios"
 import { merge } from "lodash-es"
@@ -24,8 +25,11 @@ function createInstance() {
         case 10010:
           window.location.href = apiData.data.loginUrl
           return
-        default:
-          return Promise.reject(new Error("Error"))
+        default: {
+          const err = apiData.message || '请求失败'
+          message.error(err)
+          return Promise.reject()
+        }
       }
     },
     (error) => {

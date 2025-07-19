@@ -4,11 +4,23 @@
 
 .project-list {
   width: 350px;
+  max-height: 270px;
+  overflow-y: auto;
 }
 
 .project-item {
+  cursor: pointer;
   transition: padding .2s ease-out;
 }
+
+.project-item:last-of-type {
+  padding-bottom: 0;
+}
+
+.project-item:first-of-type {
+  padding-top: 24px;
+}
+
 .project-item:hover {
   border-radius: 10px;
   padding-left: 15px;

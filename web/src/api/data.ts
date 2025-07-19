@@ -1,6 +1,6 @@
 import request from "../utils/request";
 
-enum DataType {
+export enum DataType {
   STRING = 'string',
   NUMBER = 'number',
   JSON = 'json',
@@ -20,10 +20,24 @@ export interface DataListResult {
 
 interface DataListParams {
   groupId: number | string;
+  projectId: number;
 }
 
 export const fetchDataList = (params: DataListParams) => request<DataListResult[]>({
   method: 'GET',
+  url: '/api/data/data_list',
   params,
-  url: '/api/data/data_list'
+})
+
+interface CreateDataParams {
+  groupId: number;
+  name: string;
+  type: DataType,
+  content?: string;
+  desc?: string;
+}
+export const createData = (data: CreateDataParams) => request<DataListResult>({
+  method: 'POST',
+  url: '/api/data/create_data',
+  data,
 })

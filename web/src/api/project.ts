@@ -12,7 +12,19 @@ export interface IProject {
   updatedAt: Date;
 }
 
+interface CreateProjectParams {
+  nameCn: string;
+  name: string;
+  description?: string;
+}
+
 export const fetchProjectList = () => request<IProject[]>({
   method: 'GET',
   url: '/api/project/project_list'
+})
+
+export const createProject = (data: CreateProjectParams) => request<IProject>({
+  method: 'POST',
+  url: '/api/project/create_project',
+  data,
 })

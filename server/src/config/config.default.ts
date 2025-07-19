@@ -1,7 +1,7 @@
 import { MidwayConfig } from '@midwayjs/core';
 
 // @ts-ignore
-import { prod } from '../../sensitive-config.json'
+import { prod } from '../../sensitive-config.json';
 
 export default {
   domain: 'https://doraemon.x1.pub',

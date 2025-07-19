@@ -3,6 +3,7 @@ import { Avatar, Popover, Segmented, Button, List } from 'antd';
 import { SwapOutlined, PlusOutlined } from '@ant-design/icons'
 import { useSearchParams } from "react-router";
 
+import CreateProjectModal from "../../create-project-modal";
 import { fetchProjectList, type IProject } from "../../../api/project";
 import { type IBaseContext } from "..";
 import { EnvType } from "../../../api/group";
@@ -45,12 +46,15 @@ const ProjectSwitcher: React.FC<IProjectSwitcher> = ({ onChange, collapsed }) =>
   const [loading, setLoading] = useState<boolean>(false)
   const [selected, setSelected] = useState<IProject>()
   const [env, setEnv] = useState<EnvType>()
+  const [open, setOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams()
-  
+  const [modalOpen, setModalOpen] = useState(false)
+
   const handleSelect = (project: IProject) => {
     setSelected(project)
     searchParams.set('id', String(project.id))
     setSearchParams(searchParams)
+    setOpen(false)
   }
 
   const handleEnvChange = (value: EnvType) => {
@@ -88,20 +92,37 @@ const ProjectSwitcher: React.FC<IProjectSwitcher> = ({ onChange, collapsed }) =>
     setEnv(env)
   }
 
-  const ProjetList = <List
-    className={css['project-list']}
-    itemLayout="horizontal"
-    dataSource={list}
-    renderItem={item => (
-      <List.Item className={css['project-item']} onClick={() => handleSelect(item)}>
-        <List.Item.Meta
-          avatar={<Avatar style={{ backgroundColor: '#13c2c2' }}>{item.nameCn[0]}</Avatar>}
-          title={<span style={{ cursor: 'pointer' }}>{item.nameCn}</span>}
-          description={<span className={css.ellipsis}>{item.description || '该项目没有填写备注'}</span>}
-        />
-      </List.Item>
-    )}
-  />
+  const handleOpenCreate = () => {
+    setOpen(false)
+    setModalOpen(true)
+  }
+
+  const handleSubmitCreate = (project: IProject) => {
+    setModalOpen(false)
+    getProjectList()
+    handleSelect(project)
+  }
+
+  const ProjetList = (
+    <>
+      <Button block onClick={handleOpenCreate}>新建项目</Button>
+      <List
+        className={css['project-list']}
+        itemLayout="horizontal"
+        dataSource={list}
+        split={false}
+        renderItem={item => (
+          <List.Item className={css['project-item']} onClick={() => handleSelect(item)}>
+            <List.Item.Meta
+              avatar={<Avatar style={{ backgroundColor: '#13c2c2' }}>{item.nameCn[0]}</Avatar>}
+              title={<span>{item.nameCn}</span>}
+              description={<span className={css.ellipsis}>{item.description || '该项目没有填写备注'}</span>}
+            />
+          </List.Item>
+        )}
+      />
+    </>
+  )
 
   const envPptions = segmentedOptions.filter(item => {
     if (!collapsed) {
@@ -122,18 +143,24 @@ const ProjectSwitcher: React.FC<IProjectSwitcher> = ({ onChange, collapsed }) =>
     getProjectList()
   }, [])
 
-  return <div>
+  return <>
     <div className={css.project}>
-      { list.length > 0 && selected ?
-        <Popover placement="rightTop" content={ProjetList}>
+      {list.length > 0 && selected ?
+        <Popover
+          placement="rightTop"
+          content={ProjetList}
+          open={open}
+          onOpenChange={setOpen}
+          trigger='click'
+        >
           <Button block>
-            { collapsed && <Avatar size="small" style={{ backgroundColor: '#13c2c2' }}>{selected.nameCn[0]}</Avatar> }
-            { !collapsed && <span className={css.text}>{selected.nameCn}</span> }
-            { !collapsed && <SwapOutlined /> }
+            {collapsed && <Avatar size="small" style={{ backgroundColor: '#13c2c2' }}>{selected.nameCn[0]}</Avatar>}
+            {!collapsed && <span className={css.text}>{selected.nameCn}</span>}
+            {!collapsed && <SwapOutlined />}
           </Button>
         </Popover> :
-        <Button loading={loading} block>
-          { !collapsed && <span>{ loading ? '项目加载中' : '创建项目'}</span> }
+        <Button loading={loading} block onClick={handleOpenCreate}>
+          {!collapsed && <span>{loading ? '项目加载中' : '创建项目'}</span>}
           <PlusOutlined />
         </Button>
       }
@@ -146,7 +173,8 @@ const ProjectSwitcher: React.FC<IProjectSwitcher> = ({ onChange, collapsed }) =>
         options={envPptions}
       />
     </div>
-  </div>
+    <CreateProjectModal open={modalOpen} onSubmitSuccess={handleSubmitCreate} onCancel={() => setModalOpen(false)} />
+  </>
 }
 
 export default ProjectSwitcher
