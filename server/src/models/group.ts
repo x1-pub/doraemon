@@ -8,7 +8,7 @@ import {
   DataType,
 } from 'sequelize-typescript';
 
-import { Project } from './project.entity';
+import Project from './project';
 
 enum EnvType {
   TEST = 'test',
@@ -27,7 +27,7 @@ enum EnvType {
     },
   ],
 })
-export class Group extends Model {
+export default class Group extends Model {
   @ForeignKey(() => Project)
   @Column
   projectId: number;

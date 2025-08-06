@@ -1,25 +1,19 @@
-import '@midwayjs/core';
+import "@x1.pub/rui";
+import type { Sequelize } from "sequelize";
+import type { Server } from "@x1.pub/sso";
 
-export interface IUserOptions {
-  uid: number;
-}
+declare module "@x1.pub/rui" {
+  interface RuiInstance {
+    mysql: Sequelize
+  }
 
-export interface ISSOResData {
-  code: number;
-  message: string;
-  data: {
-    sessionId: string;
-    loginUrl: string;
-    id: number;
-    name: string;
-    nameCn: string;
-    email: string;
-  };
-}
-
-export interface IUserInfo {
-  id: number;
-  uname: string;
-  unameCn: string;
-  uemail: string;
+  interface Context {
+    sso: Server;
+    user: {
+      id: number;
+      name: string;
+      nameCn: string;
+      email: string;
+    }
+  }
 }

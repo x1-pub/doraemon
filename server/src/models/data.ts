@@ -8,8 +8,8 @@ import {
   DataType,
 } from 'sequelize-typescript';
 
-import { Group } from './group.entity';
-import { Project } from './project.entity';
+import Group from './group';
+import Project from './project';
 
 enum ColumnDataType {
   STRING = 'string',
@@ -29,7 +29,7 @@ enum ColumnDataType {
     },
   ],
 })
-export class Data extends Model {
+export default class Data extends Model {
   @ForeignKey(() => Project)
   @Column
   projectId: number;

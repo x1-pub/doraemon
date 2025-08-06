@@ -9,14 +9,14 @@ import {
   HasMany,
 } from 'sequelize-typescript';
 
-import { Group } from './group.entity';
+import Group from './group';
 
 @Table({
   tableName: 't_project',
   timestamps: true,
   paranoid: true,
 })
-export class Project extends Model {
+export default class Project extends Model {
   @HasMany(() => Group)
   groups: Group[];
 
