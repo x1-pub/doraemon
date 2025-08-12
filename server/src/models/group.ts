@@ -10,7 +10,7 @@ import {
 
 import Project from './project';
 
-enum EnvType {
+export enum EnvType {
   TEST = 'test',
   PRE = 'pre',
   PROD = 'prod',
@@ -23,7 +23,7 @@ enum EnvType {
     {
       name: 'unique_projectId_name',
       unique: true,
-      fields: ['projectId', 'name'],
+      fields: ['projectId', 'env', 'name'],
     },
   ],
 })

@@ -4,16 +4,24 @@ enum ColumnDataType {
   JSON = 'json',
 }
 
+type Env = 'prod' | 'pre' | 'test'
+
+
 export interface Data {
+  id: number;
+  projectId: number;
   groupId: number;
   type: ColumnDataType;
+  env: Env;
   name: string;
   content: string;
   desc: string;
-  version: number;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface DoraemonOptions {
+  env: `${Env}`;
   app: string;
   secret: string;
 }

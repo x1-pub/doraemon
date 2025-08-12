@@ -54,10 +54,10 @@ class OpenApiController {
     }
     const projectId = auth.data as number
 
-    const { groupName } = await GetDataDTO(ctx.body)
+    const { groupName, env } = await GetDataDTO(ctx.body)
 
     const data = await Data.findAll({
-      where: { projectId: projectId, groupName },
+      where: { projectId: projectId, groupName, env },
     });
 
     ctx.json({

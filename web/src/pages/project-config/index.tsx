@@ -90,7 +90,6 @@ const ProjectConfig: React.FC = () => {
   }
 
   const handleGroupSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
-    console.log(info)
     const id = Number(selectedKeys[0])
     setActiveGroup(info.node as unknown as GroupTreeResult)
     if (!info.node.children?.length) {

@@ -10,6 +10,7 @@ class ProjectController {
   static list = async (ctx: Context) => {
     const lists = await Project.findAll({
       where: { owner: ctx.user.id },
+      attributes: ['id', 'name', 'nameCn', 'description'],
       raw: true,
     })
     

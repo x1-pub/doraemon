@@ -7,9 +7,8 @@ import Data from "../models/data";
 
 import { local, prod } from '../../sensitive-config.json'
 
-const sensitiveConfig = process.env.NODE_ENV === 'production' ? prod : local
-
-console.log(process.env.NODE_ENV)
+const isProd = process.env.NODE_ENV === 'production'
+const sensitiveConfig = isProd ? prod : local
 
 const mysqlPlugin = async (rui: RuiInstance) => {
   const sequelize = new Sequelize({
@@ -24,8 +23,9 @@ const mysqlPlugin = async (rui: RuiInstance) => {
   })
 
   await sequelize.authenticate();
-  
-  sequelize.addModels([Project, Group, Data])
+  await sequelize.addModels([Project, Group, Data])
+  await sequelize.sync();
+
 
   rui.mysql = sequelize
 

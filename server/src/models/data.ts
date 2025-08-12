@@ -8,7 +8,7 @@ import {
   DataType,
 } from 'sequelize-typescript';
 
-import Group from './group';
+import Group, { EnvType } from './group';
 import Project from './project';
 
 enum ColumnDataType {
@@ -37,6 +37,12 @@ export default class Data extends Model {
   @ForeignKey(() => Group)
   @Column
   groupId: number;
+
+  @Column({
+    type: DataType.ENUM(...Object.values(EnvType)),
+    allowNull: false,
+  })
+  env: EnvType;
 
   @AllowNull(false)
   @Column

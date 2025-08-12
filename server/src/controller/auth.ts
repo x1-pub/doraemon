@@ -10,7 +10,7 @@ class AuthController {
     const { code, data, message } = await ctx.sso.AuthTicket({ ticket: String(ticket) })
 
     if (code === 0) {
-      ctx.setCookie(SESSION_NAME, data.sessionId, { sameSite: false, path: '/' });
+      ctx.setCookie(SESSION_NAME, data.sessionId);
       ctx.redirect(String(callbackUrl));
       return
     }
