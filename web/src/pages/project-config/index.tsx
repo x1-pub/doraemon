@@ -129,6 +129,7 @@ const ProjectConfig: React.FC = () => {
         selectedKeys={activeGroup ? [activeGroup.id] : []}
         showLine
         showIcon={false}
+        defaultExpandedKeys={[TREE_ROOT_GROUP_ID]}
       />
     </div>
     <div className={css.contentWrap}>

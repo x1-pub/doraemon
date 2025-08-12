@@ -64,10 +64,10 @@ const BaseLayout: React.FC = () => {
     <Sider collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} breakpoint="lg" theme="light">
       <div className={css.sider}>
         <div className={css.header} data-collapsed={collapsed}>
-          <Avatar src={<img src={logo} alt="avatar" />} />
+          <Avatar src={<img src={logo} alt="avatar" onClick={() => navigate('/')} />} />
           { !collapsed && (
             <>
-              <span>DORAEMON</span>
+              <span onClick={() => navigate('/')}>DORAEMON</span>
               <MenuFoldOutlined onClick={() => setCollapsed(!collapsed)} />
             </>
           ) }
