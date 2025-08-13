@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Button, Empty, Space, Table, TableProps, Tree, Typography, type TreeProps } from "antd";
+import React, { useEffect, useMemo, useState } from "react";
+import { Button, Empty, message, Popconfirm, Space, Table, TableProps, Tree, Typography, type TreeProps } from "antd";
 
 import NoProjects from "../../components/no-projects";
 import useProject from "../../hooks/use-project";
 import { fetchGroupTree, type GroupTreeResult } from "../../api/group";
-import { fetchDataList, type DataListResult } from "../../api/data";
+import { deleteData, fetchDataList, type DataListResult } from "../../api/data";
 import CreateGroupModal from "./create-group";
 import CreateDataModal from "./create-data";
 import css from './index.module.less'
+import { preloadMonacoEditor } from "../../utils/monaco-loader";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+
+preloadMonacoEditor()
 
 const columns: TableProps<DataListResult>['columns'] = [
   {
@@ -43,24 +47,6 @@ const columns: TableProps<DataListResult>['columns'] = [
     title: '版本',
     dataIndex: 'version',
   },
-  {
-    title: '操作',
-    dataIndex: 'id',
-    render: () => {
-      return (
-        <Space>
-          <Typography.Link>
-            编辑
-          </Typography.Link>
-          <Typography.Link>
-            回滚
-          </Typography.Link>
-        </Space>
-      )
-    },
-    width: 100,
-    fixed: 'right',
-  },
 ]
 
 const TREE_ROOT_GROUP_ID = 0
@@ -72,6 +58,7 @@ const ProjectConfig: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [activeGroup, setActiveGroup] = useState<GroupTreeResult>()
   const [createDataOpen, setCreateDataOpen] = useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const isActiveLeafGroup = !!activeGroup && !activeGroup?.children?.length
 
   const getGroup = async () => {
@@ -95,12 +82,47 @@ const ProjectConfig: React.FC = () => {
     if (!info.node.children?.length) {
       getData(id)
     }
+    setSelectedRowKeys([])
   }
 
   const handleCreateDataSuccess = () => {
     getData(activeGroup?.id!)
     setCreateDataOpen(false)
   }
+
+  const handleDelete = async (row: DataListResult) => {
+    await deleteData({ dataId: row.id, projectId: row.projectId })
+    getData(row.groupId)
+    message.success('删除成功')
+  }
+
+  const actionColumn: TableProps<DataListResult>['columns'] = useMemo(() => {
+    return [
+      {
+        title: '操作',
+        dataIndex: 'id',
+        render: (_v, r) => {
+          return (
+            <Space>
+              <Typography.Link>编辑</Typography.Link>
+              <Popconfirm
+                title='警告'
+                description='删除后数据不可恢复，确认继续删除吗？'
+                okText='确认删除'
+                cancelText='取消'
+                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                onConfirm={() => handleDelete(r)}
+              >
+                <Typography.Link type="danger">删除</Typography.Link>
+              </Popconfirm>
+            </Space>
+          )
+        },
+        width: 100,
+        fixed: 'right',
+      }
+    ]
+  }, [])
 
   useEffect(() => {
     setActiveGroup(undefined)
@@ -137,20 +159,17 @@ const ProjectConfig: React.FC = () => {
           <div className={css.buttonGroup}>
             <Button onClick={() => setCreateDataOpen(true)}>新增Key</Button>
             <Button>发布</Button>
-            <Button type="primary" danger ghost>
-              删除
-            </Button>
           </div>
           <Table<DataListResult>
             rowKey="id"
-            columns={columns}
+            columns={[...columns, ...actionColumn]}
             dataSource={data}
             pagination={false}
             scroll={{ x: 'max-content' }}
             loading={loading}
             rowSelection={{
-              selectedRowKeys: [],
-              onChange: () => {}
+              selectedRowKeys,
+              onChange: (keys: React.Key[]) => setSelectedRowKeys(keys)
             }}
           />
         </>

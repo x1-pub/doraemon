@@ -1,7 +1,6 @@
 import type { Context } from "@x1.pub/rui";
 
 const preResponseHandler = async (ctx: Context) => {
-  ctx.setHeader('Access-Control-Allow-Credentials', 'true')
   if (!ctx._responseData && ctx.res.statusCode === 404) {
     ctx.send(JSON.stringify({
       code: 500,

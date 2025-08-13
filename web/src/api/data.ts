@@ -8,6 +8,7 @@ export enum DataType {
 
 export interface DataListResult {
   id: number;
+  projectId: number;
   groupId: number;
   type: DataType;
   name: string;
@@ -39,5 +40,15 @@ interface CreateDataParams {
 export const createData = (data: CreateDataParams) => request<DataListResult>({
   method: 'POST',
   url: '/api/data/create_data',
+  data,
+})
+
+interface DeleteDataParams {
+  dataId: number;
+  projectId: number;
+}
+export const deleteData = (data: DeleteDataParams) => request<void>({
+  method: 'POST',
+  url: '/api/data/delete_data',
   data,
 })

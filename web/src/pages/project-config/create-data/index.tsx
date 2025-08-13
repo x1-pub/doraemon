@@ -1,7 +1,8 @@
-import { Form, Input, Modal, Select } from "antd";
+import { Form, Input, Modal, Radio } from "antd";
 import React from "react";
 import { message } from "antd";
 import { createData, DataListResult, DataType } from "../../../api/data";
+import TextEditor from "../../../components/text-editor";
 
 type FieldType = {
   name: string;
@@ -19,6 +20,7 @@ interface CreateGroupModalProps {
 
 const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ groupId, open, onCancel, onSubmitSuccess }) => {
   const [form] = Form.useForm<FieldType>();
+  const typeValue = Form.useWatch('type', form)
 
   const handleOk = async () => {
     const values = await form.validateFields()
@@ -41,8 +43,9 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ groupId, open, onCa
       okText='提交'
       cancelText='取消'
       destroyOnClose
+      width={750}
     >
-      <Form preserve={false} form={form} autoComplete='off'>
+      <Form preserve={false} form={form} autoComplete='off' labelCol={{ span: 2 }}>
         <Form.Item<FieldType>
           label="Key"
           name="name"
@@ -59,17 +62,34 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ groupId, open, onCa
         <Form.Item<FieldType>
           label="类型"
           name="type"
+          initialValue={DataType.JSON}
         >
-          <Select options={Object.values(DataType).map(value => ({ label: value.toLocaleUpperCase(), value }))} />
+          <Radio.Group options={Object.values(DataType).map(value => ({ label: value.toLocaleUpperCase(), value }))} />
         </Form.Item>
         <Form.Item<FieldType>
           label="Value"
           name="content"
+          rules={[
+            { required: true, message: '请输入Value!' },
+            {
+              validator: (_, value: string) => {
+                if (!value || typeValue !== DataType.JSON) {
+                  return Promise.resolve()
+                }
+                try {
+                  JSON.parse(value)
+                  return Promise.resolve()
+                } catch {
+                  return Promise.reject('json不合法')
+                }
+              }
+            }
+          ]}
         >
-          <Input />
+          <TextEditor type={typeValue} />
         </Form.Item>
         <Form.Item<FieldType>
-          label="描述"
+          label="备注"
           name="desc"
         >
           <Input />

@@ -52,3 +52,22 @@ export const CreateDataDTO = (data) => new Validator({
     },
   },
 }).valid<CreateData>(data)
+
+interface DeleteData {
+  dataId: number;
+  projectId: number;
+}
+
+export const DeleteDataDTO = (data) => new Validator({
+  type: 'object',
+  properties: {
+    dataId: {
+      type: 'number',
+      required: true,
+    },
+    projectId: {
+      type: 'number',
+      required: true,
+    },
+  },
+}).valid<DeleteData>(data)

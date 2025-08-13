@@ -1,7 +1,7 @@
 import type { Context } from "@x1.pub/rui";
 import Project from "../models/project";
 import Data from "../models/data";
-import { CreateDataDTO, DataListDTO } from "../dto/data";
+import { CreateDataDTO, DataListDTO, DeleteDataDTO } from "../dto/data";
 import Group from "../models/group";
 
 class DataController {
@@ -24,10 +24,32 @@ class DataController {
       where: { groupId },
     });
 
-    ctx.send({
+    ctx.json({
       code: 0,
       message: 'success',
       data: list
+    })
+  }
+
+  static delete = async (ctx: Context) => {
+    const { dataId, projectId } = await DeleteDataDTO(ctx.body);
+
+    const project = await Project.findOne({
+      where: { owner: ctx.user.id, id: projectId },
+    });
+    if (!project) {
+      ctx.json({
+        code: 999,
+        message: '无权限',
+      });
+      return
+    }
+
+    await Data.destroy({ where: { id: dataId } })
+
+    ctx.json({
+      code: 0,
+      message: 'success',
     })
   }
 
@@ -75,7 +97,7 @@ class DataController {
       groupName,
     });
 
-    ctx.send({
+    ctx.json({
       code: 0,
       message: 'success',
       data

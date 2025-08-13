@@ -1,7 +1,7 @@
 import Rui from "@x1.pub/rui";
 
-import routerPlugin from "./plugins/router";
-import mysqlPlugin from "./plugins/mysql";
+import router from "./router";
+import mysql from "./plugins/mysql";
 import errorHandler from "./hooks/error";
 import preResponseHandler from "./hooks/pre-response";
 import auth from './middleware/auth'
@@ -9,8 +9,8 @@ import auth from './middleware/auth'
 const rui = Rui()
 
 rui
-  .addPlugin(mysqlPlugin)
-  .addPlugin(routerPlugin)
+  .addPlugin(mysql)
+  .addPlugin(router)
   .addHook('onError', errorHandler)
   .addHook('onPreResponse', preResponseHandler)
   .addMiddleware(auth)
