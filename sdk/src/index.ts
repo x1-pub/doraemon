@@ -33,8 +33,8 @@ class Doraemon {
     }
   }
 
-  GetDataByGroupName = async (groupName: string) => {
-    return this.request<Data[]>('GetData', { groupName, env: this.options.env })
+  GetData = async (groupName: string, key?: string) => {
+    return this.request<Data[]>('GetData', { groupName, key, env: this.options.env })
   }
 }
 
