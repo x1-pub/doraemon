@@ -1,6 +1,6 @@
 {
   "name": "@x1.pub/doraemon",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Doraemon.x1.pub Node.js/TypeScript Server SDK",
   "type": "module",
   "main": "./dist/index.cjs",
