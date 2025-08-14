@@ -5,6 +5,7 @@ import { EnvType } from "../models/group";
 interface GetData {
   env: EnvType;
   groupName: string;
+  key?: string;
 }
 
 export const GetDataDTO = (data) => new Validator({
@@ -13,6 +14,9 @@ export const GetDataDTO = (data) => new Validator({
     groupName: {
       type: 'string',
       required: true,
+    },
+    key: {
+      type: 'string',
     },
     env: {
       type: 'string',
