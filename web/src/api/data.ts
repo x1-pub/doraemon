@@ -52,3 +52,16 @@ export const deleteData = (data: DeleteDataParams) => request<void>({
   url: '/api/data/delete_data',
   data,
 })
+
+interface ModifyDataParams {
+  projectId: number;
+  id: number;
+  type: DataType,
+  content: string;
+  desc: string;
+}
+export const modifyData = (data: ModifyDataParams) => request<DataListResult>({
+  method: 'POST',
+  url: '/api/data/modify_data',
+  data,
+})

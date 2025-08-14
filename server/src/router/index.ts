@@ -33,6 +33,7 @@ const routerPlugin = (rui: RuiInstance) => {
       router.get('/data_list', DataController.list)
       router.post('/create_data', DataController.create)
       router.post('/delete_data', DataController.delete)
+      router.post('/modify_data', DataController.modify)
     })
     
     // auth: for sso

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Empty, message, Popconfirm, Space, Table, TableProps, Tree, Typography, type TreeProps } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import NoProjects from "../../components/no-projects";
 import useProject from "../../hooks/use-project";
@@ -9,7 +10,8 @@ import CreateGroupModal from "./create-group";
 import CreateDataModal from "./create-data";
 import css from './index.module.less'
 import { preloadMonacoEditor } from "../../utils/monaco-loader";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import ModifyDataModal from "./modify-data ";
+
 
 preloadMonacoEditor()
 
@@ -58,6 +60,8 @@ const ProjectConfig: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [activeGroup, setActiveGroup] = useState<GroupTreeResult>()
   const [createDataOpen, setCreateDataOpen] = useState(false)
+  const [modifyDataOpen, setModifyDataOpen] = useState(false)
+  const [modifyData, setModifyData] = useState<DataListResult>()
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const isActiveLeafGroup = !!activeGroup && !activeGroup?.children?.length
 
@@ -69,9 +73,9 @@ const ProjectConfig: React.FC = () => {
     setGroup(data)
   }
 
-  const getData = async (groupId: number) => {
+  const getData = async (groupId: number, projectId: number = id!) => {
     setLoading(true)
-    const list = await fetchDataList({ groupId, projectId: id! })
+    const list = await fetchDataList({ groupId, projectId })
     setData(list)
     setLoading(false)
   }
@@ -85,15 +89,21 @@ const ProjectConfig: React.FC = () => {
     setSelectedRowKeys([])
   }
 
-  const handleCreateDataSuccess = () => {
+  const handleDataSuccess = () => {
     getData(activeGroup?.id!)
     setCreateDataOpen(false)
+    setModifyDataOpen(false)
   }
 
   const handleDelete = async (row: DataListResult) => {
     await deleteData({ dataId: row.id, projectId: row.projectId })
-    getData(row.groupId)
+    getData(row.groupId, row.projectId)
     message.success('删除成功')
+  }
+
+  const handleModifyData = async (row: DataListResult) => {
+    setModifyData(row)
+    setModifyDataOpen(true)
   }
 
   const actionColumn: TableProps<DataListResult>['columns'] = useMemo(() => {
@@ -104,7 +114,7 @@ const ProjectConfig: React.FC = () => {
         render: (_v, r) => {
           return (
             <Space>
-              <Typography.Link>编辑</Typography.Link>
+              <Typography.Link onClick={() => handleModifyData(r)}>编辑</Typography.Link>
               <Popconfirm
                 title='警告'
                 description='删除后数据不可恢复，确认继续删除吗？'
@@ -179,7 +189,15 @@ const ProjectConfig: React.FC = () => {
       open={createDataOpen}
       groupId={activeGroup?.id!}
       onCancel={() => setCreateDataOpen(false)}
-      onSubmitSuccess={handleCreateDataSuccess} />
+      onSubmitSuccess={handleDataSuccess}
+    />
+
+    <ModifyDataModal
+      open={modifyDataOpen}
+      data={modifyData!}
+      onCancel={() => setModifyDataOpen(false)}
+      onSubmitSuccess={handleDataSuccess}
+    />
   </div>
 }
 

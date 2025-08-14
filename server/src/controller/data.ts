@@ -1,7 +1,9 @@
 import type { Context } from "@x1.pub/rui";
+import { v4 as uuidv4 } from 'uuid';
+
 import Project from "../models/project";
 import Data from "../models/data";
-import { CreateDataDTO, DataListDTO, DeleteDataDTO } from "../dto/data";
+import { CreateDataDTO, DataListDTO, DeleteDataDTO, ModifyDataDTO } from "../dto/data";
 import Group from "../models/group";
 
 class DataController {
@@ -21,7 +23,7 @@ class DataController {
     }
 
     const list = await Data.findAll({
-      where: { groupId },
+      where: { groupId, isLatest: true },
     });
 
     ctx.json({
@@ -53,6 +55,38 @@ class DataController {
     })
   }
 
+  static modify = async (ctx: Context) => {
+    const { id, projectId, type, content, desc } = await ModifyDataDTO(ctx.body);
+
+    const project = await Project.findOne({
+      where: { owner: ctx.user.id, id: projectId },
+    });
+    if (!project) {
+      ctx.json({
+        code: 999,
+        message: '无权限',
+      });
+      return
+    }
+
+    const preVersionData = await Data.findOne({
+      where: { id, isLatest: true },
+    })
+    if (!preVersionData || (preVersionData.type === type && preVersionData.content === content && preVersionData.desc === desc)) {
+      ctx.json({
+        code: 999,
+        message: '未检测到修改',
+      });
+      return
+    }
+    await preVersionData.updateWithVersion({ type, content, desc })
+
+    ctx.json({
+      code: 0,
+      message: 'success',
+    })
+  }
+
   static create = async (ctx: Context) => {
     const { groupId, name, type, content, desc } = await CreateDataDTO(ctx.body);
 
@@ -76,6 +110,17 @@ class DataController {
       return
     }
 
+    const hasName = await Data.findOne({
+      where: { name, isLatest: true }
+    })
+    if (hasName) {
+      ctx.json({
+        code: 999,
+        message: 'Key重复',
+      });
+      return
+    }
+
     let groupName = group.name;
     let parentGroupId = group.parentId;
     while (parentGroupId) {
@@ -95,6 +140,7 @@ class DataController {
       projectId: group.projectId,
       env: group.env,
       groupName,
+      entityId: uuidv4()
     });
 
     ctx.json({

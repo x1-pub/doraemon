@@ -1,4 +1,5 @@
 import { Validator } from "@x1.pub/rui";
+import { ColumnDataType } from "../models/data";
 
 interface DataList {
   groupId: string;
@@ -71,3 +72,40 @@ export const DeleteDataDTO = (data) => new Validator({
     },
   },
 }).valid<DeleteData>(data)
+
+interface ModifyData {
+  id: number;
+  projectId: number;
+  type: ColumnDataType;
+  content: string;
+  desc: string;
+}
+
+export const ModifyDataDTO = (data) => new Validator({
+  type: 'object',
+  properties: {
+    id: {
+      type: 'number',
+      required: true,
+    },
+    projectId: {
+      type: 'number',
+      required: true,
+    },
+    type: {
+      type: 'string',
+      enum: ['string', 'number', 'json'],
+      required: true,
+    },
+    content: {
+      type: 'string',
+      required: true,
+      default: '',
+    },
+    desc: {
+      type: 'string',
+      required: true,
+      default: '',
+    },
+  },
+}).valid<ModifyData>(data)

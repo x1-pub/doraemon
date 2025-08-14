@@ -2,6 +2,7 @@ import type { Context } from "@x1.pub/rui";
 import { ValidationError } from "@x1.pub/rui";
 
 const errorHandler = async (ctx: Context, err: Error) => {
+  console.log(err)
   if (err instanceof ValidationError) {
     const firstInfo = err.info[0]
     ctx.json({

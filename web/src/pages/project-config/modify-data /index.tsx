@@ -1,41 +1,41 @@
 import { Form, Input, Modal, Radio } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { message } from "antd";
-import { createData, DataListResult, DataType } from "../../../api/data";
+import { DataListResult, DataType, modifyData } from "../../../api/data";
 import TextEditor from "../../../components/text-editor";
+import { FieldType } from "../create-data";
 
-export type FieldType = {
-  name: string;
-  type: DataType;
-  content?: string;
-  desc?: string;
-};
-
-interface CreateDataModalProps {
-  groupId: number;
+interface ModifyDataModalProps {
+  data: DataListResult;
   open: boolean;
   onCancel: () => void;
   onSubmitSuccess: (values: DataListResult) => void;
 }
 
-const CreateDataModal: React.FC<CreateDataModalProps> = ({ groupId, open, onCancel, onSubmitSuccess }) => {
-  const [form] = Form.useForm<FieldType>();
+const ModifyDataModal: React.FC<ModifyDataModalProps> = ({ data, open, onCancel, onSubmitSuccess }) => {
+  const [form] = Form.useForm<Required<FieldType>>();
   const typeValue = Form.useWatch('type', form)
 
   const handleOk = async () => {
     const values = await form.validateFields()
-    const data = await createData({
-      groupId,
+    const res = await modifyData({
+      id: data.id,
+      projectId: data.projectId,
       ...values,
     })
-    message.success('创建成功')
-    onSubmitSuccess(data)
+    message.success('修改成功')
+    onSubmitSuccess(res)
   }
 
+  useEffect(() => {
+    if (open && form) {
+      form.setFieldsValue(data)
+    }
+  }, [open])
 
   return (
     <Modal
-      title="新增Key"
+      title="编辑"
       open={open}
       maskClosable={false}
       onOk={handleOk}
@@ -46,18 +46,8 @@ const CreateDataModal: React.FC<CreateDataModalProps> = ({ groupId, open, onCanc
       width={750}
     >
       <Form preserve={false} form={form} autoComplete='off' labelCol={{ span: 2 }}>
-        <Form.Item<FieldType>
-          label="Key"
-          name="name"
-          rules={[
-            { required: true, message: '请输入Key!' },
-            {
-              validator: (_, value) =>
-                /^[a-z_0-9]+$/.test(value) ? Promise.resolve() : Promise.reject(new Error('Key只能为小写字母数字或下划线')),
-            },
-          ]}
-        >
-          <Input />
+        <Form.Item<FieldType> label="Key" name="name">
+          <Input disabled />
         </Form.Item>
         <Form.Item<FieldType>
           label="类型"
@@ -99,4 +89,4 @@ const CreateDataModal: React.FC<CreateDataModalProps> = ({ groupId, open, onCanc
   )
 }
 
-export default CreateDataModal
+export default ModifyDataModal
