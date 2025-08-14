@@ -111,7 +111,7 @@ class DataController {
     }
 
     const hasName = await Data.findOne({
-      where: { name, isLatest: true }
+      where: { name, isLatest: true, env: group.env }
     })
     if (hasName) {
       ctx.json({
