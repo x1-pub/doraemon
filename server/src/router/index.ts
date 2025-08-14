@@ -44,7 +44,7 @@ const routerPlugin = (rui: RuiInstance) => {
 
   // open api: for sdk
   rui.router.group('/open-api/v1', router => {
-    router.get('/GetData', OpenApiController.getData)
+    router.post('/GetData', OpenApiController.getData)
   })
 
   // handle 404
