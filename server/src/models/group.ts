@@ -21,9 +21,9 @@ export enum EnvType {
   paranoid: true,
   indexes: [
     {
-      name: 'unique_projectId_name',
+      name: 'unique_projectId_parentId_name',
       unique: true,
-      fields: ['projectId', 'env', 'name'],
+      fields: ['projectId', 'parentId', 'env', 'name'],
     },
   ],
 })
