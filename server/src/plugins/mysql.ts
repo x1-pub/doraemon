@@ -12,7 +12,7 @@ const sensitiveConfig = isProd ? prod : local
 
 const mysqlPlugin = async (rui: RuiInstance) => {
   const sequelize = new Sequelize({
-    database: 'doraemon',
+    database: sensitiveConfig.mysql.database,
     dialect: 'mysql',
     define: { charset: 'utf8' },
     timezone: '+08:00',
